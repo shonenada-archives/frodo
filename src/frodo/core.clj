@@ -8,9 +8,10 @@
 
 
 (defroutes app-routes 
-  (GET "/" [] (views/index))
+  (GET "/" request (views/index request))
+  (GET "/say-hi/:username" [username] (views/say-hi username))
   (route/resources "/")
-  (route/not-found "Page not found"))
+  (route/not-found (views/page-not-found)))
 
 
 (defn drop-ring []
