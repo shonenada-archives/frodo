@@ -1,19 +1,23 @@
 (ns frodo.core
   (:gen-class)
-  (:use [ring.adapter.jetty]))
+  (:use [ring.adapter.jetty]
+        [compojure.core])
+  (:require [compojure.route :as route]
+            [compojure.handler :as handler]
+            [frodo.views :as views]))
 
 
-(defn index-handler [request]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body "Frodo."})
+(defroutes app-routes 
+  (GET "/" [] (views/index))
+  (route/resources "/")
+  (route/not-found "Page not found"))
 
 
 (defn drop-ring []
   "Drop the ring into Mount Doom"
-  (run-jetty index-handler {:port 3000}))
+  (def app (handler/api app-routes))
+  (run-jetty app {:port 3000}))
 
 
 (defn -main [& args]
-  (drop-ring)
-)
+  (drop-ring))
